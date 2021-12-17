@@ -6,11 +6,8 @@ using DG.Tweening;
 using UnityEngine.EventSystems;//ボタンと画面タッチにコンフリクトを生まないため
 using TMPro;
 
-
-public abstract class NovelHistoria : SingletonMonoBehaviourFast<NovelHistoria>
+public class NovelHistoria_Mk2 : MonoBehaviour
 {
-    //全てのシステムの統括部門。全ての入力を受け付け、また、全ての出力を決定する場所でもある
-
     [Space]
     //ウィンドウオプション（改訂版）
     public Image WindowSize;//ウィンドウサイズの値
@@ -21,16 +18,20 @@ public abstract class NovelHistoria : SingletonMonoBehaviourFast<NovelHistoria>
 
     [Space]
     //ノベルテキスト用
-    //private Text[] NovelText;//使用するフォントオブジェクトのスタック専用
-    //private int TextNumber;//現在の文字の位置番号　格納変数
-    private bool Talking;//会話中かどうか
-    private bool Pressed;//次に送るまでの処理
-    //[System.NonSerialized] public bool Paused;//ポーズ中
-    //[System.NonSerialized] public bool HistoriaMODE;//１文字づつ追加か一気に追加か
+    [System.NonSerialized] public bool Talking;//会話中かどうか
+    [System.NonSerialized] public bool Pressed;//次に送るまでの処理
+    [System.NonSerialized] public bool Paused;//ポーズ中
+    [System.NonSerialized] public bool HistoriaMODE;//１文字づつ追加か一気に追加か
 
     [Space]
     public TextMeshProUGUI MessageFont_Number;
     public TextMeshProUGUI TextWindow_Number;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
 
     // Update is called once per frame
     void Update()

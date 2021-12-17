@@ -5,6 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class NovelClass
 {
+    //この命令はプレイヤーの意思によって飛ばせないようにするか
+    //させないとしたら何秒後に偏移させるか
+
     //基本ノベルパラメータ
     public NovelParameter NovelParameter;
 

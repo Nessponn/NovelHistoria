@@ -12,57 +12,28 @@ public class NovelSystemMaster : SingletonMonoBehaviourFast<NovelSystemMaster>
 {
     //このスクリプトは、NovelTaker(仮称)の内容を一つのウィンドウに表示するための処理を行う場所
     //また、ウィンドウやテキストのSetting等の設定、反映も行う。
-
-    #region NovelSystemManager Core
-    [Space]
-    //ウィンドウオプション（改訂版）
-    public Image WindowSize;//ウィンドウサイズの値
-    public Image WindowAlpha;//ウィンドウの透明度の値（フォントは含まない）
-    public CanvasGroup WindowCanvas;//ウィンドウそのもの
-    public RectTransform MessageFont;//メッセージのフォント
-    public CanvasGroup TextWindow;//テキストウィンドウ（フォントは含まない）
-
-    [Space]
-    //ノベルテキスト用
     private Text[] NovelText;//使用するフォントオブジェクトのスタック専用
     private int TextNumber;//現在の文字の位置番号　格納変数
-    private bool Talking;//会話中かどうか
     private bool Pressed;//次に送るまでの処理
     [System.NonSerialized] public bool Paused;//ポーズ中
     [System.NonSerialized] public bool HistoriaMODE;//１文字づつ追加か一気に追加か
+
+    private bool Talking;//会話中かどうか
+    #region NovelSystemManager Core
+    [Space]
+    public CanvasGroup WindowCanvas;//ウィンドウそのもの
+
+    [Space]
+    //ノベルテキスト用
+   
+    
 
     [Space]
     public TextMeshProUGUI MessageFont_Number;
     public TextMeshProUGUI TextWindow_Number;
 
     
-    // Update is called once per frame
-    void Update()
-    {
-        if (Talking)
-        {
-            MessageFont_Number.text = "" + (int)(WindowSize.fillAmount * 100);
-            TextWindow_Number.text = "" + (int)(WindowAlpha.fillAmount * 100);
-
-            MessageFont.localScale = Vector3.Lerp(new Vector3(0.72f, 0.735f, 1), new Vector3(0.9f, 0.915f, 1), WindowSize.fillAmount);
-            MessageFont.localPosition = Vector3.Lerp(new Vector3(0, -200, 0), new Vector3(0, -175, 0), WindowSize.fillAmount);
-            TextWindow.gameObject.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(8, 1.5f, 1), new Vector3(10, 2, 1), WindowSize.fillAmount);
-            TextWindow.gameObject.GetComponent<RectTransform>().localPosition = Vector3.Lerp(new Vector3(0, -200, 0), new Vector3(0, -175, 0), WindowSize.fillAmount);
-            TextWindow.alpha = 1 - WindowAlpha.fillAmount;
-        }
-
-        //ボタンが押された場合、クリックでの会話進行は無効
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            return;
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Pressed = true;
-        }
-    }
-
+   
     #endregion
 
     #region NovelSystem Method
@@ -117,7 +88,7 @@ public class NovelSystemMaster : SingletonMonoBehaviourFast<NovelSystemMaster>
     private void NovelStart(NovelClass[] NC)
     {
         Pressed = false;
-        StartCoroutine(SystemTake(NC, NC[Novelnumber].NovelParameter.ResidualText, NC[Novelnumber].ActionParameter));
+        StartCoroutine(SystemStart(NC, NC[Novelnumber].NovelParameter.ResidualText, NC[Novelnumber].ActionParameter));
     }
 
     //
@@ -128,19 +99,36 @@ public class NovelSystemMaster : SingletonMonoBehaviourFast<NovelSystemMaster>
 
         WindowCanvas.DOFade(0, 1f);
     }
-    public IEnumerator SystemTake(NovelClass[] NC, bool ResidualText, ActionParameter AP)
+
+    //一つの命令を実行
+    public IEnumerator SystemStart(NovelClass[] NC, bool ResidualText, ActionParameter AP)
     {
-        //一度走らせれば、あとは各コルーチンでループしてくれる
+        //一つのノベルシーンシステムに付き
+
+        //ノベルシステムの開始
         StartCoroutine(NovelTake(NovelTexts[Novelnumber].NovelParameter.Text, NovelTexts[Novelnumber].NovelParameter.ResidualText, NovelTexts[Novelnumber].ActionParameter));
         yield return null;
 
 
     }
-    //全てのシステムを統括し、様々な処理を行う
-    public IEnumerator NovelTake(string NovelTextContent ,bool ResidualText,ActionParameter AP)
+
+    public IEnumerator NovelSystem(NovelClass[] NC,int Number)
+    {
+
+        yield return null;
+    }
+
+    public IEnumerator NovelTake(NovelClass[] NC, int Number)
+    {
+
+        yield return null;
+    }
+
+        //全てのシステムを統括し、様々な処理を行う
+        public IEnumerator NovelTake(string NovelTextContent ,bool ResidualText,ActionParameter AP)
     {
         //何も入力されていなければ、ここで処理を終了
-        if (NovelTextContent == "") yield break; 
+        if (NovelTextContent == "") yield break;
         
         //ウィンドウの表示
         WindowCanvas.DOFade(1, 1f);
@@ -263,18 +251,18 @@ public class NovelSystemMaster : SingletonMonoBehaviourFast<NovelSystemMaster>
     }
     public void HistoryAdd(Text[] Tx)
     {
-        NovelHistoria.Instance.HistoryTake(Tx);
+        NovelHistoria_Setting.Instance.HistoryTake(Tx);
     }
 
     public void TextAdd(Text tx, char cx, int FontNumber)
     {
         tx.text += cx;
-        NovelHistoria.Instance.HistoryAdd(cx, FontNumber);
+        NovelHistoria_Setting.Instance.HistoryAdd(cx, FontNumber);
     }
     public void TextAdd(Text tx,string cx,int FontNumber)
     {
         tx.text += cx;
-        NovelHistoria.Instance.HistoryAdd(cx, FontNumber);
+        NovelHistoria_Setting.Instance.HistoryAdd(cx, FontNumber);
     }
     #endregion
 
