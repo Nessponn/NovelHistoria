@@ -379,7 +379,7 @@ MonoBehaviour:
   NS:
   - NovelParameter:
       Name: 
-      Text: 
+      Text: "\u3042\u3042\u3042\u3042\u3042\u3042\u3042"
       ChoicesObject: {fileID: 0}
       ResidualText: 0
       InterbalTime: 0.02
@@ -395,13 +395,13 @@ MonoBehaviour:
       ResidualText: 0
       InterbalTime: 0.02
     ActionParameter:
-      pos: {fileID: 0}
-      TransTime: 0
+      pos: {fileID: 1737462550}
+      TransTime: 1
       Timing: 0
       DoAfterTalk: 0
   - NovelParameter:
       Name: 
-      Text: "\u306A\u3093\u304B\u3059\u3052\u30FC\u3082\u3093\u304C\u3042\u308B\u305E\uFF01"
+      Text: "\u306A\u3093\u304B'F1'\u3059\u3052\u30FC\u3082\u3093'F0'\u304C\u3042\u308B\u305E\uFF01"
       ChoicesObject: {fileID: 0}
       ResidualText: 0
       InterbalTime: 0.02

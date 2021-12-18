@@ -15,7 +15,7 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
     private NovelClass[] NovelTexts;
     private int Novelnumber;//現在のテキストの番号
 
-    
+    private bool stop;
 
     //会話のシーンが開始された直後、会話データがここにもってこられる
     public void Setup(NovelTaker DATA)
@@ -58,7 +58,7 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
         }
         else
         {
-            if (!NovelHistoria_Mk3.Historia.Talking)
+            if (stop)
             {
                 ReStart();
                 yield return new WaitForSeconds(0.3f);
@@ -68,14 +68,16 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
         //会話の開始入力がなされていなければ、会話の開始処理
         if (!NovelHistoria_Mk3.Historia.Talking)
         {
+            //画面の表示（画面はノベル出力命令があった時のみ使用するため、ここに記述）
+            NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(1f, 1);//★
             DOVirtual.DelayedCall(1, () =>//★
             {
                 //会話の開始
                 NovelHistoria_Mk3.Historia.Talking = true;
-                //画面の表示（画面はノベル出力命令があった時のみ使用するため、ここに記述）
-                NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(1f, 1);//★
             }
-        );
+            );
+            yield return new WaitForSeconds(1f);//★
+            
         }
         //読み込む文字の位置を最初に戻す
         TextNumber = 0;
@@ -151,8 +153,7 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
             }
             TextNumber++;//追加したら1増加
 
-            //if (!Pressed) 
-            yield return new WaitForSeconds(0.06f);
+            if (!NovelHistoria_Mk3.Historia.Pressed) yield return new WaitForSeconds(0.06f);
 
         }
     }
@@ -160,14 +161,16 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
     //途中で文字列がないものが来た時にいったん会話ウィンドウを消す
     private void Stop()
     {
-        NovelHistoria_Mk3.Historia.Talking = false;
+        Debug.Log("Stop");
+        stop = true;
         NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(0, 0.3f);
     }
 
     //Stopで消したウィンドウをノベルステータスはそのままにもう一度表示する
     private void ReStart()
     {
-        NovelHistoria_Mk3.Historia.Talking = true;
+        Debug.Log("Restart");
+        stop = false;
         NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(1, 0.3f);
     }
 

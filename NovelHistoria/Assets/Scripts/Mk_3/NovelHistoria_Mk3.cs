@@ -88,13 +88,9 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         }
     }
 
-    private void HistoriaSystem_Setup()
-    {
+    
 
-    }
-
-    //データ処理開始
-    //★つけたところは後で設定一秒のところを任意の秒数に変えるように変更する
+    
     public void HistoriaSystem_Start(NovelTaker DATA)
     {
         
@@ -103,11 +99,17 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         //NovelSystemのSetUp
         NovelSystem_Mk3.Instance.Setup(DATA);
 
-        DOVirtual.DelayedCall(1, () =>//★
-        {
-            //システムの開始 番号指定可
-            StartCoroutine(HistoriaSystem_While(DATA, 0));
-        });
+
+        //システムの開始 番号指定可
+        StartCoroutine(HistoriaSystem_While(DATA, 0));
+
+    }
+    
+    //データ処理開始
+    //★つけたところは後で設定一秒のところを任意の秒数に変えるように変更する
+    private void HistoriaSystem_Setup()
+    {
+
     }
 
     //継続的なデータ処理
@@ -119,7 +121,7 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         StartCoroutine(NovelSystem_Mk3.Instance.While(DATA,Number));
 
         //アクションシステムにデータを投下
-        //ActionSystem_Mk2.Instance.ActionStart(DATA);
+        ActionSystem_Mk3.Instance.Move(DATA, Number);
 
         yield return new WaitUntil(() => Pressed);
 
@@ -132,12 +134,13 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         }
         else
         {
-            HistoriaSystem_Over();
+            HistoriaSystem_Over(DATA);
         }
     }
 
-    private void HistoriaSystem_Over()
+    private void HistoriaSystem_Over(NovelTaker DATA)
     {
         NovelSystem_Mk3.Instance.Over();
+        ActionSystem_Mk3.Instance.Over(DATA);
     }
 }
