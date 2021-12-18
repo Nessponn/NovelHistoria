@@ -4,53 +4,53 @@ using UnityEngine;
 
 public class SingletonNoveler<T> : NovelHistoria_Mk2 where T : SingletonNoveler<T>
 {
-	protected static readonly string[] findTags =
+	protected static readonly string[] NovelfindTags =
 	{
 		"GameController",
 	};
 
-	protected static T instance;
-	public static T Instance
+	protected static T nins;
+	public static T NIns
 	{
 		get
 		{
-			if (instance == null)
+			if (nins == null)
 			{
 
 				Type type = typeof(T);
 
-				foreach (var tag in findTags)
+				foreach (var tag in NovelfindTags)
 				{
 					GameObject[] objs = GameObject.FindGameObjectsWithTag(tag);
 
 					for (int j = 0; j < objs.Length; j++)
 					{
-						instance = (T)objs[j].GetComponent(type);
-						if (instance != null)
-							return instance;
+						nins = (T)objs[j].GetComponent(type);
+						if (nins != null)
+							return nins;
 					}
 				}
 
 				Debug.LogWarning(string.Format("{0} is not found", type.Name));
 			}
 
-			return instance;
+			return nins;
 		}
 	}
 
 	virtual protected void Awake()
 	{
-		CheckInstance();
+		CheckInstanceHistoria();
 	}
 
-	protected bool CheckInstance()
+	protected bool CheckInstanceHistoria()
 	{
-		if (instance == null)
+		if (nins == null)
 		{
-			instance = (T)this;
+			nins = (T)this;
 			return true;
 		}
-		else if (Instance == this)
+		else if (NIns == this)
 		{
 			return true;
 		}

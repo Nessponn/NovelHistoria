@@ -6,9 +6,8 @@ using DG.Tweening;
 using UnityEngine.EventSystems;//ボタンと画面タッチにコンフリクトを生まないため
 using TMPro;
 
-public class NovelSystem_Mk2 : SingletonNoveler<NovelSystem_Mk2>
+public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
 {
-
     private Text[] NovelText;//使用するフォントオブジェクトのスタック専用
     private int TextNumber;//現在の文字の位置番号　格納変数
 
@@ -16,73 +15,12 @@ public class NovelSystem_Mk2 : SingletonNoveler<NovelSystem_Mk2>
     private NovelClass[] NovelTexts;
     private int Novelnumber;//現在のテキストの番号
 
-/*
-    public void NovelStart(NovelClass[] Texts, Text[] Fonts, int DebugNovel)
-    {
-        #region NovelSystem
-
-        //ここからテキストの配列を取り出し、ステータスを下記のコルーチンで発火させる
-        NovelTexts = Texts;
-        Novelnumber = DebugNovel;
-
-        //使用するテキストフォントをNovelTextに適用する
-        NovelText = Fonts;
-
-        //再度表示前に文字の内容を一度リセット
-        for (int i = 0; i < NovelText.Length; i++)
-        {
-            NovelText[i].text = "";
-        }
-
-        //必要な情報をもとにノベルスタート
-        DOVirtual.DelayedCall(1, () =>
-        {
-            NovelStart();
-        }
-        );
-        #endregion
-
-        #region ActionSystem
-
-
-
-        #endregion
-    }*/
-
-    /// <summary>
-    /// 
-    /// 要件
-    /// 
-    /// NovelHistoriaから送信されたデータのうち
-    /// ノベルデータのみを処理するためのクラスである。
-    /// While処理は
-    /// 
-    /// </summary>
-
-
-
-
-    //オーバーライド。１つのオブジェクトから２回目以降の会話を実行するために使用
-    //Managerでのみ使用するために、修飾子はprivate
-   /* public void NovelStart()
-    {
-        Pressed = false;
-        StartCoroutine(NovelTake(NovelTexts[Novelnumber].NovelParameter.Text, NovelTexts[Novelnumber].NovelParameter.ResidualText, NovelTexts[Novelnumber].ActionParameter));
-    }*/
-
-    /*
-    public void NovelStart(NovelClass[] DATA)
-    {
-        Pressed = false;
-        StartCoroutine(SystemStart(DATA, DATA[Novelnumber].NovelParameter.ResidualText, DATA[Novelnumber].ActionParameter));
-    }
-    */
+    
 
     //会話のシーンが開始された直後、会話データがここにもってこられる
     public void Setup(NovelTaker DATA)
     {
         //ここからテキストの配列を取り出し、ステータスを下記のコルーチンで発火させる
-        //NovelTexts = DATA.NC;
         Novelnumber = DATA.NovelNumber_Debug;
 
         //使用するテキストフォントをNovelTextに適用する
@@ -94,27 +32,16 @@ public class NovelSystem_Mk2 : SingletonNoveler<NovelSystem_Mk2>
             NovelText[i].text = "";
         }
 
-        //スタート処理はNovelHistoria側で行うため、個々でのスタート処理は行わない
-        /*//必要な情報をもとにノベルスタート
-        DOVirtual.DelayedCall(1, () =>
-        {
-            Pressed = false;
-            StartCoroutine(Novel_While(DATA));
-        }
-        );*/
-
     }
 
     public IEnumerator While(NovelTaker DATA, int Number)
     {
+
+        Debug.Log("通ってる");
+
         //何も入力されていなければ、ここで処理を終了
         if (DATA.NS[Number].NovelParameter.Text == "") yield break;
 
-        //ウィンドウの表示
-        WindowCanvas.DOFade(1, 1f);
-
-        //会話の開始
-        Talking = true;
 
         //次のテキストを引き継ぐのでなければ
         //基本テキストの内容をからっぽにする
@@ -146,7 +73,7 @@ public class NovelSystem_Mk2 : SingletonNoveler<NovelSystem_Mk2>
             //コマンド入力位置で差し込む
 
             //ヒストリー選択中やオプション中はポーズ処理を行う
-            yield return new WaitUntil(() => !Paused);
+            yield return new WaitUntil(() => !NovelHistoria_Mk3.Historia.Paused);
 
             //アクション入力命令があれば実行する
             //if (AP.pos != null) ActionSystemMaster.Instance.ActionStart(AP.pos, AP.TransTime);
@@ -204,7 +131,7 @@ public class NovelSystem_Mk2 : SingletonNoveler<NovelSystem_Mk2>
             TextNumber++;//追加したら1増加
 
             //if (!Pressed) 
-                yield return new WaitForSeconds(0.02f);
+            yield return new WaitForSeconds(0.06f);
 
         }
 
@@ -232,6 +159,20 @@ public class NovelSystem_Mk2 : SingletonNoveler<NovelSystem_Mk2>
             NovelOver();
         }*/
     }
+
+    public void Over()
+    {
+        //会話の終了
+        NovelHistoria_Mk3.Historia.Talking = false;
+
+        NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(0, 1f);
+    }
+
+
+
+
+
+
     public void HistoryAdd(Text[] Tx)
     {
         NovelHistoria_Setting.Instance.HistoryTake(Tx);
@@ -247,6 +188,4 @@ public class NovelSystem_Mk2 : SingletonNoveler<NovelSystem_Mk2>
         tx.text += cx;
         NovelHistoria_Setting.Instance.HistoryAdd(cx, FontNumber);
     }
-
 }
-   

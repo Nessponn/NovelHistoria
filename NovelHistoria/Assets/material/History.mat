@@ -80,8 +80,8 @@ Material:
     - _node_2836: 20
     - _node_7609: 0.4
     - _node_8127: 0
-    - _node_8595: -0.0205
-    - _node_8598: 0.027
+    - _node_8595: 0.025
+    - _node_8598: 0.188
     m_Colors:
     - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}

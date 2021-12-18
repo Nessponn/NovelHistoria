@@ -15,9 +15,11 @@ public class NovelTaker : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //基本のNovelParameterのスタート
-        NovelSystemMaster.Instance.NovelStart(NS,Fonts, NovelNumber_Debug);
+        //データの取得
+        NovelTaker DATA = gameObject.GetComponent<NovelTaker>();
 
+        //データをNovelHistoriaに送る
+        NovelHistoria_Mk3.Historia.HistoriaSystem_Start(DATA);
     }
 
     // Update is called once per frame

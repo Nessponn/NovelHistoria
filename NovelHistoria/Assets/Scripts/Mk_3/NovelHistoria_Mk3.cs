@@ -7,9 +7,34 @@ using UnityEngine.EventSystems;//ボタンと画面タッチにコンフリクトを生まないため
 using TMPro;
 
 
-//[RequireComponent(typeof(NovelSystem_Mk2))]
-public class NovelHistoria_Mk2 : MonoBehaviour
+public class NovelHistoria_Mk3 : MonoBehaviour
 {
+	#region SingletonArea
+
+	private static NovelHistoria_Mk3 historia;
+	public static NovelHistoria_Mk3 Historia
+	{
+		get
+		{
+			if (null == historia)
+			{
+				historia = (NovelHistoria_Mk3)FindObjectOfType(typeof(NovelHistoria_Mk3));
+				if (null == historia) Debug.LogError(" Data Instance Error ");
+			}
+			return historia;
+		}
+	}
+
+	void Awake()
+	{
+		GameObject[] obj = GameObject.FindGameObjectsWithTag("GameController"); //タグで判別
+		if (1 < obj.Length) Destroy(gameObject);
+		else DontDestroyOnLoad(gameObject);
+	}
+
+
+    #endregion
+
     [Space]
     //ウィンドウオプション（改訂版）
     public Image WindowSize;//ウィンドウサイズの値
@@ -32,7 +57,7 @@ public class NovelHistoria_Mk2 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -66,24 +91,53 @@ public class NovelHistoria_Mk2 : MonoBehaviour
     //データ処理開始
     public void HistoriaSystem_Start(NovelTaker DATA)
     {
+        //ウィンドウの表示
+        WindowCanvas.DOFade(1, 1f);
+
         //各種システムのSetupメソッドにアクセスし、Setupする
         //NovelSystemのSetUp
-        //NovelSystem_Mk2.Instance.Setup(DATA);
+        NovelSystem_Mk3.Instance.Setup(DATA);
 
+        DOVirtual.DelayedCall(1, () =>
+        {
+            //システムの開始 番号指定可
+            StartCoroutine(HistoriaSystem_While(DATA, 0));
 
-        //システムの開始 番号指定可
-        StartCoroutine(HistoriaSystem_While(DATA, 0));
+            //会話の開始
+            Talking = true;
+        }
+        );
+        
     }
 
     //継続的なデータ処理
-    private IEnumerator HistoriaSystem_While(NovelTaker DATA,int Number)
+    private IEnumerator HistoriaSystem_While(NovelTaker DATA, int Number)
     {
+        Pressed = false;
+
         //会話システムにデータを投下
-        //NovelSystem_Mk2.Instance.While(DATA,Number);
+        StartCoroutine(NovelSystem_Mk3.Instance.While(DATA,Number));
 
         //アクションシステムにデータを投下
         //ActionSystem_Mk2.Instance.ActionStart(DATA);
 
-        yield return null;
+        yield return new WaitUntil(() => Pressed);
+
+        //クリックされたら次に進む
+        Number++;
+
+        if(DATA.NS.Length > Number)
+        {
+            StartCoroutine(HistoriaSystem_While(DATA, Number));
+        }
+        else
+        {
+            HistoriaSystem_Over();
+        }
+    }
+
+    private void HistoriaSystem_Over()
+    {
+        NovelSystem_Mk3.Instance.Over();
     }
 }

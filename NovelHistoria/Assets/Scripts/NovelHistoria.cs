@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;//ボタンと画面タッチにコンフリクトを生まないため
 using TMPro;
 
 
-public abstract class NovelHistoria : SingletonMonoBehaviourFast<NovelHistoria>
+public abstract class NovelHistoria : MonoBehaviour
 {
     //全てのシステムの統括部門。全ての入力を受け付け、また、全ての出力を決定する場所でもある
 
