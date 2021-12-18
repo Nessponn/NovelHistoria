@@ -31,18 +31,12 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
         {
             NovelText[i].text = "";
         }
-
+        
     }
 
+    //★つけたところは後で設定一秒のところを任意の秒数に変えるように変更する
     public IEnumerator While(NovelTaker DATA, int Number)
     {
-
-        Debug.Log("通ってる");
-
-        //何も入力されていなければ、ここで処理を終了
-        if (DATA.NS[Number].NovelParameter.Text == "") yield break;
-
-
         //次のテキストを引き継ぐのでなければ
         //基本テキストの内容をからっぽにする
         if (!DATA.NS[Number].NovelParameter.ResidualText)
@@ -54,6 +48,35 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
             //ヒストリーのプレハブを生成する
             HistoryAdd(NovelText);
         }
+
+        //何も入力されていなければ、ここで処理を終了
+        //そして、次に会話のデータが入っていてもいったんウィンドウを消す（未実装）
+        if (DATA.NS[Number].NovelParameter.Text == "")
+        {
+            Stop();
+            yield break;
+        }
+        else
+        {
+            if (!NovelHistoria_Mk3.Historia.Talking)
+            {
+                ReStart();
+                yield return new WaitForSeconds(0.3f);
+            }
+        }
+
+        //会話の開始入力がなされていなければ、会話の開始処理
+        if (!NovelHistoria_Mk3.Historia.Talking)
+        {
+            DOVirtual.DelayedCall(1, () =>//★
+            {
+                //会話の開始
+                NovelHistoria_Mk3.Historia.Talking = true;
+                //画面の表示（画面はノベル出力命令があった時のみ使用するため、ここに記述）
+                NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(1f, 1);//★
+            }
+        );
+        }
         //読み込む文字の位置を最初に戻す
         TextNumber = 0;
 
@@ -61,8 +84,6 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
         FontNumber = 0;
 
         //待機時間の計算
-
-
 
 
         //テキストを一文字づつ表示していく
@@ -134,30 +155,20 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
             yield return new WaitForSeconds(0.06f);
 
         }
+    }
 
-        //Pressed = false;
+    //途中で文字列がないものが来た時にいったん会話ウィンドウを消す
+    private void Stop()
+    {
+        NovelHistoria_Mk3.Historia.Talking = false;
+        NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(0, 0.3f);
+    }
 
-        //yield return new WaitUntil(() => Pressed);
-
-        //クリックで先に進む
-
-        //全ての入力が終わると
-        //テキストウィンドウがフェードアウトする
-        //そうでなければ次のテキストを表示する
-
-        //NovelHistoria側でwhile命令を出すため、ここでの処理は必要ない
-        /*
-        if (NovelTexts.Length - 1 > Novelnumber)
-        {
-            //まだメッセージが残っている場合
-            Novelnumber++;
-            NovelStart();
-        }
-        else
-        {
-            //メッセージが残っていない場合
-            NovelOver();
-        }*/
+    //Stopで消したウィンドウをノベルステータスはそのままにもう一度表示する
+    private void ReStart()
+    {
+        NovelHistoria_Mk3.Historia.Talking = true;
+        NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(1, 0.3f);
     }
 
     public void Over()

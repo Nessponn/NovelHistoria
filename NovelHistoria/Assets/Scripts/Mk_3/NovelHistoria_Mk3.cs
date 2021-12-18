@@ -57,7 +57,7 @@ public class NovelHistoria_Mk3 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        TextWindow.alpha = 1 - WindowAlpha.fillAmount;
     }
 
     // Update is called once per frame
@@ -88,26 +88,26 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         }
     }
 
+    private void HistoriaSystem_Setup()
+    {
+
+    }
+
     //データ処理開始
+    //★つけたところは後で設定一秒のところを任意の秒数に変えるように変更する
     public void HistoriaSystem_Start(NovelTaker DATA)
     {
-        //ウィンドウの表示
-        WindowCanvas.DOFade(1, 1f);
+        
 
         //各種システムのSetupメソッドにアクセスし、Setupする
         //NovelSystemのSetUp
         NovelSystem_Mk3.Instance.Setup(DATA);
 
-        DOVirtual.DelayedCall(1, () =>
+        DOVirtual.DelayedCall(1, () =>//★
         {
             //システムの開始 番号指定可
             StartCoroutine(HistoriaSystem_While(DATA, 0));
-
-            //会話の開始
-            Talking = true;
-        }
-        );
-        
+        });
     }
 
     //継続的なデータ処理
