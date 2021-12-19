@@ -58,6 +58,7 @@ public class NovelHistoria_Mk3 : MonoBehaviour
     void Start()
     {
         TextWindow.alpha = 1 - WindowAlpha.fillAmount;
+        NovelSafetySystem.Reset();
     }
 
     // Update is called once per frame
@@ -131,7 +132,12 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         //アクションシステムにデータを投下
         ActionSystem_Mk3.Instance.Move(DATA, Number);
 
-        yield return new WaitUntil(() => Pressed);
+
+        //ちゃんと全てのイベントが終わったかを見る
+        yield return new WaitUntil(() => NovelSafetySystem.NovelSafety && Pressed);
+
+        //SafyteSystemのステータスをリセット
+        NovelSafetySystem.Reset();
 
         //クリックされたら次に進む
         Number++;
@@ -166,9 +172,28 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         NovelSystem_Mk3.Instance.Over();
         ActionSystem_Mk3.Instance.Over(DATA);
 
-
+        
     }
 }
+
+//ノベルや画面偏移のアニメーションにコンフリクトを起こさないためのクラス
+public static class NovelSafetySystem
+{
+    public static bool NovelSafety;
+    public static bool ActionSafety;
+
+    public static bool Safety()
+    {
+        return NovelSafety && ActionSafety;
+    }
+
+    public static void Reset()
+    {
+        NovelSafety = false;
+        ActionSafety = false;
+    }
+}
+
 public static class ListExtensions
 {
     /// <summary>

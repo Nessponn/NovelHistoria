@@ -27,7 +27,16 @@ public class ActionSystem_Mk3 : SingletonMonoBehaviourFast<ActionSystem_Mk3>
     public void Move(NovelTaker DATA, int Number)
     {
         //偏移先が無ければ処理終了
-        if (DATA.NS[Number].ActionParameter.pos == null) return;
+        if (DATA.NS[Number].ActionParameter.pos == null)
+        {
+            //アニメーション終了を告知
+            NovelSafetySystem.ActionSafety = true;
+
+            Debug.Log("ActionSystem Safety() = " + NovelSafetySystem.Safety());
+            Debug.Log("ActionSystem NovelSafety = " + NovelSafetySystem.NovelSafety);
+            Debug.Log("ActionSystem ActionSafety = " + NovelSafetySystem.ActionSafety);
+            return;
+        }
 
         STARTpos = camera.transform.position;
         Transtime = DATA.NS[Number].ActionParameter.TransTime;
@@ -35,6 +44,9 @@ public class ActionSystem_Mk3 : SingletonMonoBehaviourFast<ActionSystem_Mk3>
 
 
         camera.transform.DOMove(ENDpos, Transtime);
+
+        //アニメーション終了を告知
+        NovelSafetySystem.ActionSafety = true;
     }
 
     public void While()

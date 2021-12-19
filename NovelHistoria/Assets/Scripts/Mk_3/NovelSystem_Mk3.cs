@@ -156,6 +156,11 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
             if (!NovelHistoria_Mk3.Historia.Pressed) yield return new WaitForSeconds(0.06f);
 
         }
+        //SafetySystemのNovelをtrueにして次送りを解禁する
+        NovelSafetySystem.NovelSafety = true;
+        Debug.Log("NovelSystem Safety() = " + NovelSafetySystem.Safety());
+        Debug.Log("NovelSystem NovelSafety = " + NovelSafetySystem.NovelSafety);
+        Debug.Log("NovelSystem ActionSafety = " + NovelSafetySystem.ActionSafety);
     }
 
     //途中で文字列がないものが来た時にいったん会話ウィンドウを消す
@@ -163,6 +168,7 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
     {
         //Debug.Log("Stop");
         stop = true;
+        NovelSafetySystem.NovelSafety = true;
         NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(0, 0.3f);
     }
 

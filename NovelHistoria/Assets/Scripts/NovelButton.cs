@@ -15,6 +15,8 @@ public class NovelButton : MonoBehaviour
     // Start is called before the first frame update
     public void History()
     {
+        NovelHistoria_Mk3.Historia.Paused = !NovelHistoria_Mk3.Historia.Paused;
+
         HistoryUI.SetActive(!HistoryUI.activeSelf);
         if (HistoryUI.activeSelf)
         {
@@ -28,6 +30,8 @@ public class NovelButton : MonoBehaviour
 
     public void Setting()
     {
+        NovelHistoria_Mk3.Historia.Paused = !NovelHistoria_Mk3.Historia.Paused;
+
         SettingUI.SetActive(!SettingUI.activeSelf);
         if (SettingUI.activeSelf)
         {
