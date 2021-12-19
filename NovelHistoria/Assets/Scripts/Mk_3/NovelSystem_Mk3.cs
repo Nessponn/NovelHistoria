@@ -161,7 +161,7 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
     //途中で文字列がないものが来た時にいったん会話ウィンドウを消す
     private void Stop()
     {
-        Debug.Log("Stop");
+        //Debug.Log("Stop");
         stop = true;
         NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(0, 0.3f);
     }
@@ -169,7 +169,7 @@ public class NovelSystem_Mk3 : SingletonMonoBehaviourFast<NovelSystem_Mk3>
     //Stopで消したウィンドウをノベルステータスはそのままにもう一度表示する
     private void ReStart()
     {
-        Debug.Log("Restart");
+        //Debug.Log("Restart");
         stop = false;
         NovelHistoria_Mk3.Historia.WindowCanvas.DOFade(1, 0.3f);
     }

@@ -88,13 +88,28 @@ public class NovelHistoria_Mk3 : MonoBehaviour
         }
     }
 
-    
 
+    private List<NovelTaker> StackDATA = new List<NovelTaker>();
     
     public void HistoriaSystem_Start(NovelTaker DATA)
     {
-        
+        //すでに会話が開始されていた場合、要素をスタックに追加するのみで処理を終える
+        if(StackDATA.Count > 0)
+        {
+            //Debug.Log("既に会話は開始されています");
+            StackDATA.Push(DATA);
+            return;
+        }
+        //そうでなければ、加えて会話開始処理を行う
+        StackDATA.Push(DATA);
 
+        HistoriaSystem_Setup(StackDATA[0]);
+    }
+
+    //データ処理開始
+    //★つけたところは後で設定一秒のところを任意の秒数に変えるように変更する
+    private void HistoriaSystem_Setup(NovelTaker DATA)
+    {
         //各種システムのSetupメソッドにアクセスし、Setupする
         //NovelSystemのSetUp
         NovelSystem_Mk3.Instance.Setup(DATA);
@@ -102,13 +117,6 @@ public class NovelHistoria_Mk3 : MonoBehaviour
 
         //システムの開始 番号指定可
         StartCoroutine(HistoriaSystem_While(DATA, 0));
-
-    }
-    
-    //データ処理開始
-    //★つけたところは後で設定一秒のところを任意の秒数に変えるように変更する
-    private void HistoriaSystem_Setup()
-    {
 
     }
 
@@ -140,7 +148,64 @@ public class NovelHistoria_Mk3 : MonoBehaviour
 
     private void HistoriaSystem_Over(NovelTaker DATA)
     {
+        StackDATA.Pop();
+
+        //まだStackDATAにデータが残っているならば、そのデータを参照し、再びSetupへ
+
+        if(StackDATA.Count > 0)
+        {
+            HistoriaSystem_Setup(StackDATA[0]);
+
+            //一部機能はOverでいったんリセット
+            ActionSystem_Mk3.Instance.Over(DATA);
+
+            return;
+        }
+        //完全にデータを消費したらOver
+
         NovelSystem_Mk3.Instance.Over();
         ActionSystem_Mk3.Instance.Over(DATA);
+
+
+    }
+}
+public static class ListExtensions
+{
+    /// <summary>
+    /// 先頭にあるオブジェクトを削除します
+    /// </summary>
+    public static void Pop<T>(this IList<T> self)
+    {
+        self.RemoveAt(0);
+        //Debug.Log("データを消去");
+    }
+
+    /// <summary>
+    /// 末尾にオブジェクトを追加します
+    /// </summary>
+    public static void Push<T>(this IList<T> self, T item)
+    {
+        self.Insert(self.Count, item);
+        //Debug.Log("データを追加");
+    }
+
+    /// <summary>
+    /// 先頭にあるオブジェクトを削除し、返します
+    /// </summary>
+    public static T RetPop<T>(this IList<T> self)
+    {
+        var result = self[0];
+        self.RemoveAt(0);
+        return result;
+    }
+
+    /// <summary>
+    /// 末尾にオブジェクトを追加します
+    /// </summary>
+    public static T RetPush<T>(this IList<T> self, T item)
+    {
+        var result = self[0];
+        self.Insert(0, item);
+        return result;
     }
 }
